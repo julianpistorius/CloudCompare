@@ -10,49 +10,29 @@ install:
 - sudo add-apt-repository --yes ppa:george-edison55/cmake-3.x
 - sudo add-apt-repository --yes ppa:beineri/opt-qt551-trusty
 - sudo apt-get update -qq
-- sudo apt-get install -qy cmake qt55base libgdal1-dev libfreenect-dev
-  libeigen3-dev libqt5svg5-dev libtbb-dev
+- sudo apt-get install -qy cmake qt55base libgdal1-dev libfreenect-dev libeigen3-dev
+  libqt5svg5-dev libtbb-dev
 - git submodule init && git submodule update
 before_script:
 - mkdir build
 - cd build
-- cmake -DCMAKE_BUILD_TYPE=Release
-  -DQT5_ROOT_PATH=/opt/qt55
-  -DEIGEN_ROOT_DIR=/usr/include/eigen3
-  -DCOMPILE_CC_CORE_LIB_WITH_TBB=ON
-  -DOPTION_USE_DXF_LIB=ON
-  -DOPTION_USE_SHAPE_LIB=ON
-  -DINSTALL_EXAMPLE_PLUGIN=ON
-  -DINSTALL_EXAMPLE_GL_PLUGIN=ON
-  -DINSTALL_EXAMPLE_IO_PLUGIN=ON
-  -DINSTALL_QADDITIONAL_IO_PLUGIN=ON
-  -DINSTALL_QANIMATION_PLUGIN=ON
-  -DINSTALL_QBROOM_PLUGIN=ON
-  -DINSTALL_QCOMPASS_PLUGIN=ON
-  -DINSTALL_QCSF_PLUGIN=ON
-  -DINSTALL_QEDL_PLUGIN=ON
-  -DINSTALL_QFACETS_PLUGIN=ON
-  -DINSTALL_QHOUGH_NORMALS_PLUGIN=ON
-  -DINSTALL_QHPR_PLUGIN=ON
-  -DINSTALL_QM3C2_PLUGIN=ON
-  -DINSTALL_QPCV_PLUGIN=ON
-  -DINSTALL_QPHOTOSCAN_IO_PLUGIN=ON
-  -DINSTALL_QPOISSON_RECON_PLUGIN=ON
-  -DINSTALL_QSRA_PLUGIN=ON
-  -DINSTALL_QSSAO_PLUGIN=ON
-  ..
+- cmake -DCMAKE_BUILD_TYPE=Release -DQT5_ROOT_PATH=/opt/qt55 -DEIGEN_ROOT_DIR=/usr/include/eigen3
+  -DCOMPILE_CC_CORE_LIB_WITH_TBB=ON -DOPTION_USE_DXF_LIB=ON -DOPTION_USE_SHAPE_LIB=ON
+  -DINSTALL_EXAMPLE_PLUGIN=ON -DINSTALL_EXAMPLE_GL_PLUGIN=ON -DINSTALL_EXAMPLE_IO_PLUGIN=ON
+  -DINSTALL_QADDITIONAL_IO_PLUGIN=ON -DINSTALL_QANIMATION_PLUGIN=ON -DINSTALL_QBROOM_PLUGIN=ON
+  -DINSTALL_QCOMPASS_PLUGIN=ON -DINSTALL_QCSF_PLUGIN=ON -DINSTALL_QEDL_PLUGIN=ON -DINSTALL_QFACETS_PLUGIN=ON
+  -DINSTALL_QHOUGH_NORMALS_PLUGIN=ON -DINSTALL_QHPR_PLUGIN=ON -DINSTALL_QM3C2_PLUGIN=ON
+  -DINSTALL_QPCV_PLUGIN=ON -DINSTALL_QPHOTOSCAN_IO_PLUGIN=ON -DINSTALL_QPOISSON_RECON_PLUGIN=ON
+  -DINSTALL_QSRA_PLUGIN=ON -DINSTALL_QSSAO_PLUGIN=ON ..
 script:
 - if [[ $TRAVIS_BRANCH != "beta_builds" ]]; then make -j2; fi
 - cd ..
-after_success:
-- openssl aes-256-cbc -K $encrypted_d04fcf964026_key -iv $encrypted_d04fcf964026_iv
-  -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
 services:
 - docker
 deploy:
+  provider: releases
+  api_key:
+    secure: C4anDX8aiavvgsH/dEJWwCKh7mAz61QWhrj6FTPMJ1s9Q+y/AIrZDV4sY2MaZYqxdo0XOgltpyhnYIX3E44EC9xHOifEhL06IMOzvILJgKg9v3rxxwMjrhoyaDGXiehiEhYina6rB7xK6D8qhyzTe1LeW5FgyN/JEd4LIXjbVpVOaJ8cnTdpFPYAEs3WQva5UaFgvcheETXdceUIkGDzeqJE3muBv0SxSxwRKwsdcBBKlR9Se97nSxC/rDT7bGF3eJl5Zb+zzRXCpScWK5QEB+AOqI+C6hOFQUMc6KHhqfg1T6GAbkKhDEKRnOpMP7qX7KVdWu+5ds/KllC1ffY+mSc29hvPFdXiTEsVgqMU0/CeMvLv48wtrXsGdxOh3knHPjBXyH+mQaG8eXQBdeaiLn1DjFuGq9g6EJhRTWgO2lE2cdOr6lDSK6fqZX58+lTY5zcf0sWrC45nyGqD7VnZ7Tcd1nd4F9OEFEiNbz/iH8SN/SoiwMMYw+ZuWGOFHHuDjfBv5IKGCeQ+VOC10PHb2o2qUQlPmvTOns2cHxlMk3t7+WVutCh2y4J+6ppWYqJSzBAKqxN2/jLZ+6kZ+G7Gv3KKISlXwyXs/in0vweOcbr/Tu/4PuLYAchH+eik1v9trDnk5KkFzvXdK0f7RQ7mds3FxFT/cGl2jOmi76BqIWY=
+  file: CloudCompare/CloudCompare/parts/cloudcompare/install/bin/ccViewer
   on:
-    branch: beta_builds
-    condition: "$CC = gcc"
-  provider: script
-  script: scripts/linux/snap_deploy.sh $(pwd)
-  skip_cleanup: true
+    repo: julianpistorius/CloudCompare
